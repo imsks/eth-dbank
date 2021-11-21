@@ -8,6 +8,7 @@ contract Token is ERC20 {
     address public minter;
 
     //add minter changed event
+    event MinterChanged(address indexed from, address to);
 
     constructor() public payable ERC20("DBank Currency", "DCB") {
         //asign initial minter
@@ -15,6 +16,16 @@ contract Token is ERC20 {
     }
 
     //Add pass minter role function
+    function passMinterRole(address dBank) public returns (bool) {
+        require(
+            msg.sender == minter,
+            "Error, Only owner can change pass minter role"
+        );
+        minter = dBank;
+
+        emit MinterChanged(msg.sender, dBank);
+        return true;
+    }
 
     function mint(address account, uint256 amount) public {
         //check if msg.sender have minter role
